@@ -10,6 +10,8 @@ import ManageUsers from './pages/ManageUsers';
 import PatientPage from './pages/PatientPage';
 import AppointmentPage from './pages/AppointmentPage';
 import PrescriptionPage from './pages/PrescriptionPage';
+import MedicinePage from './pages/MedicinePage';
+import FacultyPage from './pages/FacultyPage';
 
 import './index.css';
 
@@ -23,6 +25,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="patients" element={<PatientPage />} />
         <Route path="appointments" element={<AppointmentPage />} />
         <Route path="prescriptions" element={<PrescriptionPage />} />
+        <Route path="medicines" element={<MedicinePage />} />
+        <Route path="faculties" element={<FacultyPage />} />
       </Route>
     </Routes>
   </BrowserRouter>
