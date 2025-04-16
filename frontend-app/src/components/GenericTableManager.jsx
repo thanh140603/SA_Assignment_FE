@@ -42,63 +42,68 @@ export default function GenericTableManager({ title, columns, data, onSubmit }) 
   );
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">{title}</h1>
         <button
           onClick={() => {
             setShowForm(true);
             setEditing(null);
           }}
-          className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded"
+          className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           <FaPlus /> Thêm mới
         </button>
       </div>
 
-      <table className="w-full border border-collapse">
-        <thead className="bg-gray-200">
-          <tr>
-            {columns.map((col) => (
-              <th key={col.key}>{col.label}</th>
-            ))}
-            <th>Chức năng</th>
-          </tr>
-          <tr className="bg-white text-sm">
-            {columns.map((col) => (
-              <td key={col.key}>
-                <input
-                  className="w-full border px-2"
-                  placeholder={`Tìm ${col.label}`}
-                  onChange={(e) => setSearch({ ...search, [col.key]: e.target.value })}
-                />
-              </td>
-            ))}
-            <td></td>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map((entry, idx) => (
-            <tr key={idx} className="text-center border">
-              {columns.map((col) => (
-                <td key={col.key}>{entry[col.key]}</td>
-              ))}
-              <td className="flex justify-center gap-2 py-1">
-                <button className="text-blue-500" onClick={() => setViewing(entry)}><FaEye /></button>
-                <button className="text-yellow-500" onClick={() => { setEditing(entry); setShowForm(true); }}><FaEdit /></button>
-                <button className="text-red-500" onClick={() => handleDelete(entry)}><FaTrash /></button>
-              </td>
-            </tr>
-          ))}
-          {filtered.length === 0 && (
+      <div className="overflow-x-auto shadow rounded">
+        <table className="w-full table-auto border border-gray-300">
+          <thead className="bg-gray-100">
             <tr>
-              <td colSpan={columns.length + 1} className="text-center py-4 text-gray-500">
-                Không có dữ liệu phù hợp
-              </td>
+              {columns.map((col) => (
+                <th key={col.key} className="p-2 border-r border-gray-300 text-left">{col.label}</th>
+              ))}
+              <th className="p-2 border-gray-300 text-center">Chức năng</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+            <tr className="bg-white text-sm">
+              {columns.map((col) => (
+                <td key={col.key} className="p-2 border-r border-gray-200">
+                  <input
+                    className="w-full border border-gray-300 px-2 py-1 rounded"
+                    placeholder={`Tìm ${col.label}`}
+                    onChange={(e) => setSearch({ ...search, [col.key]: e.target.value })}
+                  />
+                </td>
+              ))}
+              <td></td>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((entry, idx) => (
+              <tr
+                key={idx}
+                className="text-center border-t hover:bg-blue-50 transition-colors"
+              >
+                {columns.map((col) => (
+                  <td key={col.key} className="p-2 border-r border-gray-200">{entry[col.key]}</td>
+                ))}
+                <td className="flex justify-center items-center gap-3 p-2">
+                  <button className="text-blue-500" onClick={() => setViewing(entry)}><FaEye /></button>
+                  <button className="text-yellow-500" onClick={() => { setEditing(entry); setShowForm(true); }}><FaEdit /></button>
+                  <button className="text-red-500" onClick={() => handleDelete(entry)}><FaTrash /></button>
+                </td>
+              </tr>
+            ))}
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={columns.length + 1} className="text-center py-4 text-gray-500">
+                  Không có dữ liệu phù hợp
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">

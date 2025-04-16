@@ -1,5 +1,6 @@
 // src/components/AddPatientModal.jsx
 import { useState, useEffect } from "react";
+import axios from 'axios';
 
 export default function AddPatientModal({ onClose, onSubmit, initialData }) {
   const [form, setForm] = useState({
@@ -18,25 +19,44 @@ export default function AddPatientModal({ onClose, onSubmit, initialData }) {
     }
   }, [initialData]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const isValidText = (val) => /^[a-zA-Z0-9 ]{1,80}$/.test(val);
     if (!isValidText(form.lastName) || !isValidText(form.firstName)) {
-      return alert("Tên và họ phải chỉ chứa chữ/số và dưới 80 ký tự!");
+      return alert("The first and last name must contain only letters/numbers and less than 80 characters!");
     }
+  
     if (!form.birthday || new Date(form.birthday) > new Date()) {
-      return alert("Ngày sinh không hợp lệ!");
+      return alert("Invalid date of birth!");
     }
-
+  
+    const formattedBirthday = new Date(form.birthday).toISOString().split("T")[0];
+  
     const newPatient = {
-      id: initialData?.id || `BN${1000 + Math.floor(Math.random() * 1000)}`,
-      ...form
+      id: initialData?.id,
+      ...form,
+      birthday: formattedBirthday 
     };
-
-    onSubmit(newPatient);
-    onClose();
+  
+    try {
+      if (initialData) {
+        // Update
+        await axios.put(`http://localhost:3000/api/patients/${initialData.id}`, newPatient);
+      } else {
+        // Add new
+        await axios.post("http://localhost:3000/api/patients", newPatient);
+      }
+  
+      onSubmit(newPatient);
+      onClose();
+    } catch (error) {
+      console.log(newPatient);
+      console.error("An error occurred when saving the patient:", error);
+      alert("Unable to save the patient. Please try again.");
+    }
   };
+  
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-10">
@@ -45,12 +65,12 @@ export default function AddPatientModal({ onClose, onSubmit, initialData }) {
         <h2 className="text-xl font-bold mb-4 text-center">{initialData ? "Edit Patient" : "New Patient"}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
-          <input type="text" placeholder="Họ" value={form.lastName}
-            onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+          <input type="text" placeholder="First name" value={form.firstName}
+            onChange={(e) => setForm({ ...form, firstName: e.target.value })}
             className="w-full border p-2 rounded" required />
 
-          <input type="text" placeholder="Tên + lót" value={form.firstName}
-            onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+          <input type="text" placeholder="Last name" value={form.lastName}
+            onChange={(e) => setForm({ ...form, lastName: e.target.value })}
             className="w-full border p-2 rounded" required />
 
           <input type="date" max={new Date().toISOString().split("T")[0]} value={form.birthday}
@@ -59,14 +79,14 @@ export default function AddPatientModal({ onClose, onSubmit, initialData }) {
 
           <select value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value })}
             className="w-full border p-2 rounded" required>
-            <option value="">-- Chọn giới tính --</option>
-            <option value="Nam">Nam</option>
-            <option value="Nữ">Nữ</option>
+            <option value="">-- Select gender --</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
           </select>
 
           <select value={form.faculty} onChange={(e) => setForm({ ...form, faculty: e.target.value })}
             className="w-full border p-2 rounded" required>
-            <option value="">-- Chọn khoa --</option>
+            <option value="">-- Select Faculty ---</option>
             <option value="Cardiology">Cardiology</option>
             <option value="Neurology">Neurology</option>
             <option value="Surgery">Surgery</option>
@@ -74,7 +94,7 @@ export default function AddPatientModal({ onClose, onSubmit, initialData }) {
 
           <select value={form.disease} onChange={(e) => setForm({ ...form, disease: e.target.value })}
             className="w-full border p-2 rounded" required>
-            <option value="">-- Chọn bệnh --</option>
+            <option value="">-- Select a disease --</option>
             <option value="Mild">Mild</option>
             <option value="Moderate">Moderate</option>
             <option value="Severe">Severe</option>
@@ -82,7 +102,7 @@ export default function AddPatientModal({ onClose, onSubmit, initialData }) {
 
           <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}
             className="w-full border p-2 rounded" required>
-            <option value="">-- Trạng thái --</option>
+            <option value="">-- Status --</option>
             <option value="In treatment">In treatment</option>
             <option value="Cure">Cure</option>
             <option value="Medication">Medication</option>

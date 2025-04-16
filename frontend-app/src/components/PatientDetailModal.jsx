@@ -12,22 +12,22 @@ export default function PatientDetailModal({ patient, onClose, onEdit }) {
             <div>
               <p className="font-semibold">Patient ID</p>
               <p className="mb-3">{patient.id}</p>
-              <p className="font-semibold">Họ</p>
-              <p className="mb-3">{patient.lastName}</p>
-              <p className="font-semibold">Tên</p>
+              <p className="font-semibold">First Name</p>
               <p className="mb-3">{patient.firstName}</p>
+              <p className="font-semibold">Last Name</p>
+              <p className="mb-3">{patient.lastName}</p>
               <p className="font-semibold">Ngày sinh</p>
               <p className="mb-3">{patient.birthday}</p>
             </div>
   
             <div>
-              <p className="font-semibold">Giới tính</p>
+              <p className="font-semibold">Gender</p>
               <p className="mb-3">{patient.gender}</p>
-              <p className="font-semibold">Khoa</p>
+              <p className="font-semibold">Faculty</p>
               <p className="mb-3">{patient.faculty}</p>
-              <p className="font-semibold">Bệnh</p>
+              <p className="font-semibold">Disease</p>
               <p className="mb-3">{patient.disease}</p>
-              <p className="font-semibold">Trạng thái</p>
+              <p className="font-semibold">Status</p>
               <p className="mb-3">{patient.status}</p>
             </div>
           </div>
